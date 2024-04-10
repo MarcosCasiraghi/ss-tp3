@@ -3,7 +3,7 @@ import java.util.List;
 import java.util.Random;
 
 public class Utils {
-    private static final Random random = new Random();
+    private static final Random random = new Random(2);
 
     public static List<Particle> createParticles(final int amount, final double particle_radius, final double length, final double obstacle_radius) {
         List<Particle> particles = new ArrayList<>();
@@ -34,8 +34,6 @@ public class Utils {
                 double angle = generateRandom(0, 2 * Math.PI);
                 double xVelocity = Math.cos(angle);
                 double yVelocity = Math.sin(angle);
-                double norm = Math.sqrt(xVelocity * xVelocity + yVelocity * yVelocity);
-                System.out.println(norm);
                 return new Particle(
                         particles.size() + 1,
                         x_candidate,

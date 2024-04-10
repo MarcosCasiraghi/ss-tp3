@@ -23,17 +23,18 @@ public class Simulation {
         PriorityQueue<Event> queue = new PriorityQueue<>();
 
         for(Particle p : particles) {
-
             for(Wall w : walls) {
-                if(p.willCollideWithWall(w)){
-                    queue.add(new Event(p.getTimeToCollisionWithWall(w), p, w));
+                double t = p.getTimeToCollisionWithWall(w);
+                if(t != Double.POSITIVE_INFINITY){
+                    queue.add(new Event(t, p, w));
                 }
             }
-
             for(Particle p2 : particles) {
-                // TODO check: si funciona correctamente lo de <
-                if(p.getId() < p2.getId() && p.willCollide(p2)){
-                    queue.add(new Event(p.getTimeToCollision(p2), p, p2));
+                if(p.getId() < p2.getId()){
+                    double t = p.getTimeToCollision(p2);
+                    if(t != Double.POSITIVE_INFINITY){
+                        queue.add(new Event(t, p, p2));
+                    }
                 }
             }
         }
@@ -45,17 +46,33 @@ public class Simulation {
                 return true;
             }
             if(event.getCollidable().getType() == Collidable.CollidableType.PARTICLE) {
-                return ((Particle)event.getCollidable()).equals(p);
+                return ((Particle) event.getCollidable()).equals(p);
             }
             // TODO: complete
             return false;
         });
     }
+    private void addEventsForParticle(Particle p){
+        for(Wall w : walls) {
+            double t = p.getTimeToCollisionWithWall(w);
+            if(t != Double.POSITIVE_INFINITY){
+                events.add(new Event(t, p, w));
+            }
+        }
+        for(Particle p2 : particles) {
+            if(p.getId() != p2.getId()){
+                double t = p.getTimeToCollision(p2);
+                if(t != Double.POSITIVE_INFINITY){
+                    events.add(new Event(t, p, p2));
+                }
+            }
+        }
+    }
 
     public void simulate() {
         // Proximo evento a ocurrir
         Event nextEvent = events.poll();
-        if(nextEvent == null){
+        if (nextEvent == null) {
             return;
         }
         double time = nextEvent.getT();
@@ -63,19 +80,29 @@ public class Simulation {
         Collidable c = nextEvent.getCollidable();
 
         // Muevo las particulas
-        for(Particle particle : particles) {
+        for (Particle particle : particles) {
             particle.move(time);
         }
 
         // Colision
         p.collision(c);
 
-        // TODO: bajar al archivo (?)
-
         // Eliminamos los eventos que ya no sirven
         removeStaleEvents(p);
+        if(c.getType() == Collidable.CollidableType.PARTICLE){
+            removeStaleEvents((Particle) c);
+        }
 
         // Agregamos los nuevos eventos posibles
-        // oka pushea c
+        addEventsForParticle(p);
+        if(c.getType() == Collidable.CollidableType.PARTICLE){
+            addEventsForParticle((Particle) c);
+        }
+
+        timeElapsed += time;
+    }
+
+    public List<Particle> getParticles() {
+        return particles;
     }
 }

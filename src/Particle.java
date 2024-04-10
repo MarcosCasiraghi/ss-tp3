@@ -16,29 +16,10 @@ public class Particle extends Collidable {
         this.yVelocity = yVelocity;
     }
     public boolean isSuperposed(double x, double y, double radius){
-        return Math.sqrt(Math.pow((this.getX() - x), 2) + (Math.pow((this.getY() - y), 2))) - this.getR() - radius < 0;
-    }
-
-    public boolean willCollide(Particle other) {
-        double delta_x = this.getX() - other.getX();
-        double delta_y = this.getY() - other.getY();
-
-        double delta_vx = this.getxVelocity() - other.getxVelocity();
-        double delta_vy = this.getyVelocity() - other.getyVelocity();
-
-        double vr = delta_x * delta_vx + delta_y * delta_vy;
-
-        if( vr >= 0 ) return false;
-
-        double d = vr * vr - (delta_vx * delta_vx + delta_vy * delta_vy) * ( delta_x * delta_x + delta_y * delta_y - Math.pow(r + r, 2) );
-        return d >= 0;
+        return Math.sqrt(Math.pow((this.getX() - x), 2) + (Math.pow((this.getY() - y), 2))) - Particle.getR() - radius < 0;
     }
 
     public double getTimeToCollision(Particle other){
-        // Calculos al pedo
-        // if(!willCollide(other)) {
-        //     return Double.POSITIVE_INFINITY;
-        // }
 
         double delta_x = this.getX() - other.getX();
         double delta_y = this.getY() - other.getY();
@@ -48,24 +29,21 @@ public class Particle extends Collidable {
 
         double vr = delta_x * delta_vx + delta_y * delta_vy;
 
+        if( vr >= 0 ) return Double.POSITIVE_INFINITY;
+
         double d = vr * vr - (delta_vx * delta_vx + delta_vy * delta_vy) * ( delta_x * delta_x + delta_y * delta_y - Math.pow(2 * Particle.getR(), 2) );
+
+        if( d < 0 ) return Double.POSITIVE_INFINITY;
 
         return - ((vr + Math.sqrt(d)) / (delta_vx * delta_vx + delta_vy * delta_vy));
     }
-
-    public boolean willCollideWithWall(Wall wall){
-        return switch (wall.getWallType()) {
-            case TOP -> yVelocity < 0;
-            case BOTTOM -> yVelocity > 0;
-            case LEFT -> xVelocity < 0;
-            case RIGHT -> xVelocity > 0;
-        };
-    }
     public double getTimeToCollisionWithWall(Wall wall){
-        // Calculos al pedo
-        // if(! willCollideWithWall(wall)){
-        //     return Double.POSITIVE_INFINITY;
-        // }
+        switch (wall.getWallType()) {
+            case TOP -> {if(yVelocity < 0) return Double.POSITIVE_INFINITY;}
+            case BOTTOM -> {if(yVelocity > 0) return Double.POSITIVE_INFINITY;}
+            case LEFT -> {if(xVelocity < 0) return Double.POSITIVE_INFINITY;}
+            case RIGHT -> {if(xVelocity > 0) return Double.POSITIVE_INFINITY;}
+        }
         return switch (wall.getWallType()) {
             case TOP -> (r-super.getY()) / yVelocity;
             case BOTTOM -> (wall.getY() - r-super.getY()) / yVelocity;
