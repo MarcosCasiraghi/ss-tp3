@@ -169,4 +169,9 @@ public class Particle extends Collidable {
     public int hashCode() {
         return Objects.hash(id);
     }
+
+    @Override
+    public String toString() {
+        return "par:" + id + "," + getX() + "," + getY();
+    }
 }

@@ -17,7 +17,7 @@ public class Simulation {
             obstacle = new FixedObstacle(l/2.0, l/2.0, obstacleRadius);
         }
         else {
-            obstacle = new Particle(l/2.0, l/2.0, 0, 0, obstacleRadius,  obstacleMass);
+            obstacle = new MovableObstacle(l/2.0, l/2.0, obstacleRadius,  obstacleMass);
         }
         this.obstacles = List.of(obstacle);
 
@@ -33,6 +33,9 @@ public class Simulation {
         PriorityQueue<Event> queue = new PriorityQueue<>();
 
         for(Particle p : particles) {
+            if(p.getType() == Collidable.CollidableType.IMMOVABLE){
+                continue;
+            }
             // Paredes
             for(Wall w : walls) {
                 double t = p.getTimeToCollision(w);

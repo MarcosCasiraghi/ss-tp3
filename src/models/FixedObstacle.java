@@ -20,4 +20,9 @@ public class FixedObstacle extends Particle {
     public void setyVelocity(double yVelocity) {
         throw new RuntimeException("No deberia ocurrir");
     }
+
+    @Override
+    public String toString() {
+        return "par:" + getId() + "," + getX() + "," + getY();
+    }
 }
