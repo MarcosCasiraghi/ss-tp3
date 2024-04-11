@@ -1,13 +1,19 @@
-public class Collidable {
+package models;
+
+public abstract class Collidable {
     private double x;
     private double y;
-    private final CollidableType type;
+    private CollidableType type;
     public Collidable(CollidableType type){
         this.type = type;
     }
 
     public CollidableType getType() {
         return type;
+    }
+
+    public void setType(CollidableType type) {
+        this.type = type;
     }
 
     public double getX() {

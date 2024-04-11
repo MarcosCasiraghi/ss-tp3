@@ -1,3 +1,6 @@
+import models.Collidable;
+import models.Particle;
+
 public class Event implements Comparable<Event>{
     private final double t;
     private final Particle particle;

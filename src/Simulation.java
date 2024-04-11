@@ -1,36 +1,48 @@
-import com.sun.source.tree.Tree;
+import models.*;
 
 import java.util.*;
 
 public class Simulation {
-
     private final List<Particle> particles;
     private final List<Wall> walls;
+    private final List<Particle> obstacles;
     private final double l;
     private double timeElapsed;
 
     private final PriorityQueue<Event> events;
 
-    public Simulation(int n, double l, double particleR, double obstacleR) {
+    public Simulation(int n, double l, double particleR, double particleMass, double obstacleRadius, double obstacleMass, boolean fixedObstacle) {
+        Particle obstacle;
+        if(fixedObstacle) {
+            obstacle = new FixedObstacle(l/2.0, l/2.0, obstacleRadius);
+        }
+        else {
+            obstacle = new Particle(l/2.0, l/2.0, 0, 0, obstacleRadius,  obstacleMass);
+        }
+        this.obstacles = List.of(obstacle);
+
+        this.particles = Utils.createParticles(n, l, particleR, particleMass, obstacles);
         this.walls = Utils.createWalls(l);
-        this.particles = Utils.createParticles(n, particleR, l, obstacleR);
+
         this.l = l;
         this.timeElapsed = 0;
-        events = reCalculateEvents();
+        events = calculateEvents();
     }
 
-    private PriorityQueue<Event> reCalculateEvents(){
+    private PriorityQueue<Event> calculateEvents(){
         PriorityQueue<Event> queue = new PriorityQueue<>();
 
         for(Particle p : particles) {
+            // Paredes
             for(Wall w : walls) {
-                double t = p.getTimeToCollisionWithWall(w);
+                double t = p.getTimeToCollision(w);
                 if(t != Double.POSITIVE_INFINITY){
                     queue.add(new Event(t, p, w));
                 }
             }
+            // Otras particulas / obstaculos
             for(Particle p2 : particles) {
-                if(p.getId() < p2.getId()){
+                if(p.getId() < p2.getId()){                 // Optimizacion: en vez de n*n, es n+n-1+n-2...
                     double t = p.getTimeToCollision(p2);
                     if(t != Double.POSITIVE_INFINITY){
                         queue.add(new Event(t, p, p2));
@@ -53,12 +65,14 @@ public class Simulation {
         });
     }
     private void addEventsForParticle(Particle p){
+        // Paredes
         for(Wall w : walls) {
-            double t = p.getTimeToCollisionWithWall(w);
+            double t = p.getTimeToCollision(w);
             if(t != Double.POSITIVE_INFINITY){
                 events.add(new Event(t, p, w));
             }
         }
+        // Otras particulas / obstaculos
         for(Particle p2 : particles) {
             if(p.getId() != p2.getId()){
                 double t = p.getTimeToCollision(p2);
@@ -104,5 +118,9 @@ public class Simulation {
 
     public List<Particle> getParticles() {
         return particles;
+    }
+
+    public double getTimeElapsed() {
+        return timeElapsed;
     }
 }

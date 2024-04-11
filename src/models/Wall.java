@@ -1,3 +1,5 @@
+package models;
+
 public class Wall extends Collidable{
     private final WallType type;
     public Wall(double l, WallType type){
