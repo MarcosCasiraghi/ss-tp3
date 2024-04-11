@@ -21,11 +21,11 @@ public class Particle extends Collidable {
 
     public double getTimeToCollision(Particle other){
 
-        double delta_x = this.getX() - other.getX();
-        double delta_y = this.getY() - other.getY();
+        double delta_x = other.getX() - this.getX();
+        double delta_y = other.getY() - this.getY();
 
-        double delta_vx = this.getxVelocity() - other.getxVelocity();
-        double delta_vy = this.getyVelocity() - other.getyVelocity();
+        double delta_vx = other.getxVelocity() - this.getxVelocity();
+        double delta_vy = other.getyVelocity() - this.getyVelocity();
 
         double vr = delta_x * delta_vx + delta_y * delta_vy;
 
@@ -39,10 +39,10 @@ public class Particle extends Collidable {
     }
     public double getTimeToCollisionWithWall(Wall wall){
         switch (wall.getWallType()) {
-            case TOP -> {if(yVelocity < 0) return Double.POSITIVE_INFINITY;}
-            case BOTTOM -> {if(yVelocity > 0) return Double.POSITIVE_INFINITY;}
-            case LEFT -> {if(xVelocity < 0) return Double.POSITIVE_INFINITY;}
-            case RIGHT -> {if(xVelocity > 0) return Double.POSITIVE_INFINITY;}
+            case TOP -> {if(yVelocity > 0) return Double.POSITIVE_INFINITY;}
+            case BOTTOM -> {if(yVelocity < 0) return Double.POSITIVE_INFINITY;}
+            case LEFT -> {if(xVelocity > 0) return Double.POSITIVE_INFINITY;}
+            case RIGHT -> {if(xVelocity < 0) return Double.POSITIVE_INFINITY;}
         }
         return switch (wall.getWallType()) {
             case TOP -> (r-super.getY()) / yVelocity;

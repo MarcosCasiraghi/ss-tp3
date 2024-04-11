@@ -11,6 +11,7 @@ public class Utils {
             Particle particle = createNewParticleUnsuperposed(particles, length, particle_radius, obstacle_radius);
             particles.add(particle);
         }
+        Particle.setR(particle_radius);
         return particles;
     }
 
