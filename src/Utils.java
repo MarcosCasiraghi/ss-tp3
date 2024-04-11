@@ -7,11 +7,12 @@ public class Utils {
 
     public static List<Particle> createParticles(final int amount, final double particle_radius, final double length, final double obstacle_radius) {
         List<Particle> particles = new ArrayList<>();
+        Particle.setR(particle_radius);
+
         for(int i = 0; i < amount; i++){
             Particle particle = createNewParticleUnsuperposed(particles, length, particle_radius, obstacle_radius);
             particles.add(particle);
         }
-        Particle.setR(particle_radius);
         return particles;
     }
 
