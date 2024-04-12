@@ -19,11 +19,11 @@ public class Main {
         Simulation simulation = new Simulation(n, l, particleR, particleMass, obstacleR,obstacleMass,fixedObstacle);
         writeStaticFile(n, l, particleR, particleMass, particleV, obstacleR, obstacleMass, fixedObstacle, timestamp);
 
-        try (FileWriter writer = new FileWriter("./python/output-files/particle-movement-" + timestamp + ".txt")) {
+        try (FileWriter writer = new FileWriter("./python/output-files/particle-movement-" + timestamp + ".csv")) {
 
             saveParticleData(simulation.getParticles(), simulation.getTimeElapsed(), writer);
 
-            for(int i=0; i<10000; i++) {
+            for(int i=0; i<100; i++) {
                 simulation.simulate();
 
                 saveParticleData(simulation.getParticles(), simulation.getTimeElapsed(), writer);
@@ -35,7 +35,7 @@ public class Main {
 
     }
     private static void writeStaticFile(int n, double l, double particleR, double particleMass, double particleV, double obstacleRadius, double obstacleMass, boolean fixedObstacle, long timestamp){
-        try(FileWriter writer = new FileWriter("./python/output-files/static-data-" + timestamp + ".txt")) {
+        try(FileWriter writer = new FileWriter("./python/output-files/static-data-" + timestamp + ".csv")) {
             writer.write("n," + n + "\n");
             writer.write("l," + l + "\n");
             writer.write("pr," + particleR + "\n");
