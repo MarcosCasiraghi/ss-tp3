@@ -12,7 +12,7 @@ public class Simulation {
 
     private final PriorityQueue<Event> events;
 
-    public Simulation(int n, double l, double particleR, double particleMass, double obstacleRadius, double obstacleMass, boolean fixedObstacle) {
+    public Simulation(int n, double l, double particleR, double particleMass, double particleV, double obstacleRadius, double obstacleMass, boolean fixedObstacle) {
         Particle obstacle;
         if(fixedObstacle) {
             obstacle = new FixedObstacle(l/2.0, l/2.0, obstacleRadius);
@@ -22,7 +22,7 @@ public class Simulation {
         }
         this.obstacles = List.of(obstacle);
 
-        this.particles = Utils.createParticles(n, l, particleR, particleMass, obstacles);
+        this.particles = Utils.createParticles(n, l, particleR, particleMass, particleV, obstacles);
         this.walls = Utils.createWalls(l);
 
         this.l = l;
@@ -57,7 +57,7 @@ public class Simulation {
             if(p.getType() == Collidable.CollidableType.IMMOVABLE){
                 continue;
             }
-            addEventsForParticle(p, (p1, p2) -> p1.getId() < p2.getId());
+            addEventsForParticle(p, (p1, p2) -> p1.getId() != p2.getId());
         }
     }
     private void removeStaleEvents(Particle p){

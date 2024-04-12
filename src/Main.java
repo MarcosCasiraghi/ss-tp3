@@ -6,24 +6,24 @@ import java.util.List;
 
 public class Main {
     public static void main(String[] args) {
-        int n = 100;
-        double l = 10;
-        double particleR = 0.1;
+        int n = 1000;
+        double l = 0.1;
+        double particleR = 0.001;
         double particleMass = 1;
         double particleV = 1;
-        double obstacleR = 1;
+        double obstacleR = 0.0005;
         double obstacleMass = 3;
         boolean fixedObstacle = true;
         long timestamp = System.currentTimeMillis();
 
-        Simulation simulation = new Simulation(n, l, particleR, particleMass, obstacleR,obstacleMass,fixedObstacle);
+        Simulation simulation = new Simulation(n, l, particleR, particleMass, particleV, obstacleR, obstacleMass, fixedObstacle);
         writeStaticFile(n, l, particleR, particleMass, particleV, obstacleR, obstacleMass, fixedObstacle, timestamp);
 
         try (FileWriter writer = new FileWriter("./python/output-files/particle-movement-" + timestamp + ".csv")) {
 
             saveParticleData(simulation.getParticles(), simulation.getTimeElapsed(), writer);
 
-            for(int i=0; i<100; i++) {
+            for(int i=0; i<1000; i++) {
                 simulation.simulate();
 
                 saveParticleData(simulation.getParticles(), simulation.getTimeElapsed(), writer);
