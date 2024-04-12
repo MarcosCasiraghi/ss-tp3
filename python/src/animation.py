@@ -24,7 +24,7 @@ def animate(particle_filename: str, static_data_filename: str, size_multiplier: 
     particle_data = get_particle_data(particle_filename)
     static_data = get_static_data(static_data_filename)
 
-    fps = 30
+    fps = 60
 
     particle_radius, obstacle_radius = int(static_data['pr'] * size_multiplier), int(
         static_data['or'] * size_multiplier)

@@ -1,5 +1,6 @@
 package models;
 
+import java.util.Locale;
 import java.util.Objects;
 import java.util.concurrent.atomic.AtomicInteger;
 
@@ -174,6 +175,10 @@ public class Particle extends Collidable {
 
     @Override
     public String toString() {
-        return "par:" + id + "," + getX() + "," + getY() + "," + getxVelocity() + "," + getyVelocity();
+        return "par:" + id + "," +
+                String.format(Locale.US, "%.4f", getX()) + "," +
+                String.format(Locale.US, "%.4f", getY()) + "," +
+                String.format(Locale.US, "%.4f", getxVelocity()) + "," +
+                String.format(Locale.US, "%.4f", getyVelocity());
     }
 }

@@ -4,6 +4,7 @@ public abstract class Collidable {
     private double x;
     private double y;
     private CollidableType type;
+
     public Collidable(CollidableType type){
         this.type = type;
     }
