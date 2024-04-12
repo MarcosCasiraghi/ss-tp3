@@ -1,6 +1,7 @@
 import models.*;
 
 import java.util.*;
+import java.util.function.BiFunction;
 
 public class Simulation {
     private final List<Particle> particles;
@@ -26,34 +27,38 @@ public class Simulation {
 
         this.l = l;
         this.timeElapsed = 0;
-        events = calculateEvents();
+
+        // Eventos iniciales
+        this.events = new PriorityQueue<>();
+        calculateEvents();
     }
 
-    private PriorityQueue<Event> calculateEvents(){
-        PriorityQueue<Event> queue = new PriorityQueue<>();
+    private void addEventsForParticle(Particle p, BiFunction<Particle, Particle, Boolean> discriminator){
+        // Paredes
+        for(Wall w : walls) {
+            double t = p.getTimeToCollision(w) + timeElapsed;
+            if(t != Double.POSITIVE_INFINITY){
+                events.add(new Event(t, p, w));
+            }
+        }
+        // Otras particulas / obstaculos
+        for(Particle p2 : particles) {
+            if(discriminator.apply(p, p2)){
+                double t = p.getTimeToCollision(p2) + timeElapsed;
+                if(t != Double.POSITIVE_INFINITY){
+                    events.add(new Event(t, p, p2));
+                }
+            }
+        }
+    }
 
+    private void calculateEvents(){
         for(Particle p : particles) {
             if(p.getType() == Collidable.CollidableType.IMMOVABLE){
                 continue;
             }
-            // Paredes
-            for(Wall w : walls) {
-                double t = p.getTimeToCollision(w);
-                if(t != Double.POSITIVE_INFINITY){
-                    queue.add(new Event(t, p, w));
-                }
-            }
-            // Otras particulas / obstaculos
-            for(Particle p2 : particles) {
-                if(p.getId() < p2.getId()){                 // Optimizacion: en vez de n*n, es n+n-1+n-2...
-                    double t = p.getTimeToCollision(p2);
-                    if(t != Double.POSITIVE_INFINITY){
-                        queue.add(new Event(t, p, p2));
-                    }
-                }
-            }
+            addEventsForParticle(p, (p1, p2) -> p1.getId() < p2.getId());
         }
-        return queue;
     }
     private void removeStaleEvents(Particle p){
         events.removeIf(event -> {
@@ -67,24 +72,7 @@ public class Simulation {
             return false;
         });
     }
-    private void addEventsForParticle(Particle p){
-        // Paredes
-        for(Wall w : walls) {
-            double t = p.getTimeToCollision(w);
-            if(t != Double.POSITIVE_INFINITY){
-                events.add(new Event(t, p, w));
-            }
-        }
-        // Otras particulas / obstaculos
-        for(Particle p2 : particles) {
-            if(p.getId() != p2.getId()){
-                double t = p.getTimeToCollision(p2);
-                if(t != Double.POSITIVE_INFINITY){
-                    events.add(new Event(t, p, p2));
-                }
-            }
-        }
-    }
+
 
     public void simulate() {
         // Proximo evento a ocurrir
@@ -92,7 +80,7 @@ public class Simulation {
         if (nextEvent == null) {
             return;
         }
-        double time = nextEvent.getT();
+        double time = nextEvent.getT() - timeElapsed;
         Particle p = nextEvent.getParticle();
         Collidable c = nextEvent.getCollidable();
 
@@ -100,6 +88,7 @@ public class Simulation {
         for (Particle particle : particles) {
             particle.move(time);
         }
+        timeElapsed += time;
 
         // Colision
         p.collision(c);
@@ -111,12 +100,11 @@ public class Simulation {
         }
 
         // Agregamos los nuevos eventos posibles
-        addEventsForParticle(p);
+        addEventsForParticle(p, (p1, p2)-> p1.getId() != p2.getId());
         if(c.getType() == Collidable.CollidableType.PARTICLE){
-            addEventsForParticle((Particle) c);
+            addEventsForParticle((Particle) c, (p1, p2)-> p1.getId() != p2.getId());
         }
 
-        timeElapsed += time;
     }
 
     public List<Particle> getParticles() {

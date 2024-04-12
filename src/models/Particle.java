@@ -72,10 +72,10 @@ public class Particle extends Collidable {
     }
     private double getTimeToCollisionWithWall(Wall wall){
         switch (wall.getWallType()) {
-            case TOP -> {if(yVelocity > 0) return Double.POSITIVE_INFINITY;}
-            case BOTTOM -> {if(yVelocity < 0) return Double.POSITIVE_INFINITY;}
-            case LEFT -> {if(xVelocity > 0) return Double.POSITIVE_INFINITY;}
-            case RIGHT -> {if(xVelocity < 0) return Double.POSITIVE_INFINITY;}
+            case TOP -> {if(yVelocity >= 0) return Double.POSITIVE_INFINITY;}           // importante el =
+            case BOTTOM -> {if(yVelocity <= 0) return Double.POSITIVE_INFINITY;}
+            case LEFT -> {if(xVelocity >= 0) return Double.POSITIVE_INFINITY;}
+            case RIGHT -> {if(xVelocity <= 0) return Double.POSITIVE_INFINITY;}
         }
         return switch (wall.getWallType()) {
             case TOP -> (r-super.getY()) / yVelocity;
@@ -93,9 +93,9 @@ public class Particle extends Collidable {
         }
     }
     private void collisionWithImmovable(FixedObstacle p2){
-        double alfa = Math.atan2(p2.getY() - getY(), p2.getX() - getX());
-        double cos_alfa = Math.cos(alfa);
-        double sen_alfa = Math.sin(alfa);
+        double distance = Math.sqrt(Math.pow((getX() - p2.getX()), 2) + (Math.pow((getY() - p2.getY()), 2)));
+        double cos_alfa = (p2.getX() - getX()) / distance;
+        double sen_alfa = (p2.getY() - getY()) / distance;
 
         double prev_vx = xVelocity;
         double prev_vy = yVelocity;
@@ -117,11 +117,11 @@ public class Particle extends Collidable {
         double Jx = J * delta_x / (r + p2.r);
         double Jy = J * delta_y / (r + p2.r);
 
-        setxVelocity(xVelocity + Jx / mass);
-        setyVelocity(yVelocity + Jy / mass);
+        setxVelocity(xVelocity - Jx / mass);
+        setyVelocity(yVelocity - Jy / mass);
 
-        p2.setxVelocity(p2.getxVelocity() - Jx / p2.mass);
-        p2.setyVelocity(p2.getyVelocity() - Jy / p2.mass);
+        p2.setxVelocity(p2.getxVelocity() + Jx / p2.mass);
+        p2.setyVelocity(p2.getyVelocity() + Jy / p2.mass);
     }
 
     // = = = = = Getters and Setter = = = = =

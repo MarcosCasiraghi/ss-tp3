@@ -6,14 +6,14 @@ import java.util.List;
 
 public class Main {
     public static void main(String[] args) {
-        int n = 10;
+        int n = 100;
         double l = 10;
         double particleR = 0.1;
         double particleMass = 1;
         double particleV = 1;
         double obstacleR = 1;
-        double obstacleMass = 2;
-        boolean fixedObstacle = true;
+        double obstacleMass = 3;
+        boolean fixedObstacle = false;
         long timestamp = System.currentTimeMillis();
 
         Simulation simulation = new Simulation(n, l, particleR, particleMass, obstacleR,obstacleMass,fixedObstacle);
