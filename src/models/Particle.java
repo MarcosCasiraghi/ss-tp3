@@ -53,7 +53,6 @@ public class Particle extends Collidable {
 
 
     private double getTimeToCollisionWithParticle(Particle other){
-
         double delta_x = other.getX() - this.getX();
         double delta_y = other.getY() - this.getY();
 
@@ -93,16 +92,19 @@ public class Particle extends Collidable {
         }
     }
     private void collisionWithImmovable(FixedObstacle p2){
-        double distance = Math.sqrt(Math.pow((getX() - p2.getX()), 2) + (Math.pow((getY() - p2.getY()), 2)));
-        double cos_alfa = (p2.getX() - getX()) / distance;
-        double sen_alfa = (p2.getY() - getY()) / distance;
+        double delta_x = getX() - p2.getX();
+        double delta_y = getY() - p2.getY();
 
-        double prev_vx = xVelocity;
-        double prev_vy = yVelocity;
+        double delta_vx = xVelocity;
+        double delta_vy = yVelocity;
 
-        // TODO: Check
-        xVelocity =  - (cos_alfa * cos_alfa + sen_alfa * sen_alfa) * prev_vx - (2 * sen_alfa * cos_alfa) * prev_vy;
-        yVelocity =  - (2 * sen_alfa * cos_alfa) * prev_vx - (cos_alfa * cos_alfa + sen_alfa * sen_alfa) * prev_vy;
+        double J = (2 * mass * (delta_vx * delta_x + delta_vy * delta_y)) / ((r + p2.getR()));
+
+        double Jx = J * delta_x / (r + p2.getR());
+        double Jy = J * delta_y / (r + p2.getR());
+
+        setxVelocity(xVelocity - Jx / mass);
+        setyVelocity(yVelocity - Jy / mass);
     }
     private void collisionWithParticle(Particle p2){
 
