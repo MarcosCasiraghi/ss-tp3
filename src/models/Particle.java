@@ -172,6 +172,6 @@ public class Particle extends Collidable {
 
     @Override
     public String toString() {
-        return "par:" + id + "," + getX() + "," + getY();
+        return "par:" + id + "," + getX() + "," + getY() + "," + getxVelocity() + "," + getyVelocity();
     }
 }

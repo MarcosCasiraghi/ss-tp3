@@ -23,6 +23,6 @@ public class FixedObstacle extends Particle {
 
     @Override
     public String toString() {
-        return "obs:" + getId() + "," + getX() + "," + getY();
+        return "obs:"  + getId() + "," + getX() + "," + getY() + "," + getxVelocity() + "," + getyVelocity();
     }
 }
