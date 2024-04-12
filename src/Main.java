@@ -6,12 +6,12 @@ import java.util.List;
 
 public class Main {
     public static void main(String[] args) {
-        int n = 1000;
+        int n = 200;
         double l = 0.1;
         double particleR = 0.001;
         double particleMass = 1;
         double particleV = 1;
-        double obstacleR = 0.0005;
+        double obstacleR = 0.005;
         double obstacleMass = 3;
         boolean fixedObstacle = true;
         long timestamp = System.currentTimeMillis();
@@ -23,7 +23,7 @@ public class Main {
 
             saveParticleData(simulation.getParticles(), simulation.getTimeElapsed(), writer);
 
-            for(int i=0; i<1000; i++) {
+            for(int i=0; i<500; i++) {
                 simulation.simulate();
 
                 saveParticleData(simulation.getParticles(), simulation.getTimeElapsed(), writer);
