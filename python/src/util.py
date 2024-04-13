@@ -6,6 +6,8 @@ PARTICLES = 1
 OBSTACLES = 2
 X = 0
 Y = 1
+VX = 2
+VY = 3
 
 
 def get_particle_data(filename):
@@ -27,7 +29,9 @@ def get_particle_data(filename):
             elif row[0].startswith('par:'):
                 x = float(row[1])
                 y = float(row[2])
-                current_timeframe_particles.append([x, y])
+                x_velocity = float(row[3])
+                y_velocity = float(row[4])
+                current_timeframe_particles.append([x, y, x_velocity, y_velocity])
             elif row[0].startswith('obs:'):
                 x = float(row[1])
                 y = float(row[2])

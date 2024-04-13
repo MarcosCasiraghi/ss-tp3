@@ -13,7 +13,7 @@ public class Main {
         double particleV = 1;
         double obstacleR = 0.005;
         double obstacleMass = 3;
-        boolean fixedObstacle = false;
+        boolean fixedObstacle = true;
         long timestamp = System.currentTimeMillis();
 
         Simulation simulation = new Simulation(n, l, particleR, particleMass, particleV, obstacleR, obstacleMass, fixedObstacle);
