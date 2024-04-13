@@ -1,44 +1,67 @@
+import math
 from util import *
-import matplotlib.pyplot as plt
 
 
 def get_collision_velocities(particle_filename: str, static_data_filename: str):
     particle_data = get_particle_data(particle_filename)
-    static_data = get_static_data(static_data_filename)
 
-    collision_wall_times = []
-    collision_velocities_walls = []
-
-    collision_object_times = []
-    collision_velocities_object =[]
+    collision_times = []
+    collision_velocities = []
 
     i = 0
     while i + 1 < len(particle_data):
         time = particle_data[i][TIME]
         prev = particle_data[i][PARTICLES]
-        post = particle_data[i+1][PARTICLES]
-        # TODO: agregar el obstacle
+        post = particle_data[i + 1][PARTICLES]
 
-        prev_particles, post_particles = find_collision(prev, post)
+        index = find_collision_with_wall_or_obstacle(prev, post)
 
-        # colsion de particula con pared o obstaculo
-        if len(prev_particles) == 1:
-            # TODO: revisar si esto es suficiente para determinar que tipo de choque es
-            if prev_particles[0][VX] == - post_particles[0][VX]:
-                collision_wall_times.append(time)
-                # se agrega velocidad normal al choque
-                collision_velocities_walls.append(prev_particles[0][VX])
-            elif prev_particles[0][VY] == - post_particles[0][VY]:
-                collision_wall_times.append(time)
-                # se agrega velocidad normal al choque
-                collision_velocities_walls.append(prev_particles[0][VY])
+        if index:  # Es colision de pared o de obstaculo
+            collision_times.append(time)
+            particle_pre = prev[index]
+            particle_post = prev[index]
+
+            # Caso: colisiono de particula con pared
+            if is_wall_collision(particle_pre, particle_post):
+                collision_velocities.append(get_collision_with_wall(particle_pre, particle_post))
+
+            # Caso: colisiono de particula con el obstaculo
             else:
-                collision_object_times.append(time)
-                # TODO: calcular velocidad normal al choque con obstaculo
+                collision_velocities.append(get_collision_with_obstacle(particle_pre))
 
         i = i + 1
-        
-    return collision_wall_times, collision_velocities_walls, collision_object_times, collision_velocities_object
+
+    return collision_times, collision_velocities
+
+
+def is_wall_collision(particle_pre: [float], particle_post: [float]) -> bool:
+    # TODO check: esto es suficiente para ver si es colision
+    return ((particle_pre[VX] == - particle_post[VX] and particle_pre[VY] == particle_post[VY]) or
+            (particle_pre[VX] == particle_post[VX] and particle_pre[VY] == - particle_post[VY]))
+
+
+def find_collision_with_wall_or_obstacle(prev_array: [float], post_array: [float]) -> [int]:
+    idx = None
+    count = 0
+    for i, (prev, post) in enumerate(zip(prev_array, post_array)):
+        # Si alguna de las velocidades es distinta, es porque colisiono
+        if prev[VX] != post[VX] or prev[VY] != post[VY]:
+            idx = i
+            count += 1
+
+    return idx if count == 1 else None
+
+
+def get_collision_with_wall(particle_pre: [float], particle_post: [float]) -> float:
+    if particle_pre[VX] == - particle_post[VX]:
+        return abs(particle_pre[VX])
+    else:
+        return abs(particle_pre[VY])
+
+
+def get_collision_with_obstacle(particle_pre: [float]) -> float:
+    # Calculamos la velocidad normal al choque
+    return math.sqrt(particle_pre[VX] ** 2 + particle_pre[VY] ** 2)     # TODO: CHEEEECK!
 
 
 def calculate_pressure(delta_t, collision_times, collision_velocities):
@@ -62,27 +85,3 @@ def calculate_pressure(delta_t, collision_times, collision_velocities):
             pressures.append(current_pressure / delta_t)
 
     return pressures
-
-
-def find_collision(prev_array, post_array):
-    prev_particles = list()
-    post_particles = list()
-    for prev, post in zip(prev_array, post_array):
-        # Si alguna de las velocidades es distinta, es porque colisiono
-        if prev[VX] != post[VX] or prev[VY] != post[VY]:
-            prev_particles.append(prev)
-            post_particles.append(post)
-
-    return prev_particles, post_particles
-
-
-def pressure_plot(pressures, delta_t):
-    time_values = [delta_t * i for i in range(1, len(pressures) + 1)]
-
-    plt.scatter(time_values, [abs(p) for p in pressures], marker='o', color='blue')
-    plt.plot(time_values, [abs(p) for p in pressures], linestyle='-', color='gray')
-    plt.xlabel('Tiempo')
-    plt.ylabel('Presión')
-    plt.grid(True)
-    plt.show()
-
