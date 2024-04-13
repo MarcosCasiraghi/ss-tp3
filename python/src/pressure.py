@@ -2,11 +2,14 @@ import math
 from util import *
 
 
-def get_collision_velocities(particle_filename: str, static_data_filename: str):
+def get_collision_velocities(particle_filename: str):
     particle_data = get_particle_data(particle_filename)
 
-    collision_times = []
-    collision_velocities = []
+    wall_collision_times = []
+    wall_collision_velocities = []
+
+    obstacle_collision_times = []
+    obstacle_collision_velocities = []
 
     i = 0
     while i + 1 < len(particle_data):
@@ -17,21 +20,22 @@ def get_collision_velocities(particle_filename: str, static_data_filename: str):
         index = find_collision_with_wall_or_obstacle(prev, post)
 
         if index:  # Es colision de pared o de obstaculo
-            collision_times.append(time)
             particle_pre = prev[index]
-            particle_post = prev[index]
+            particle_post = post[index]
 
             # Caso: colisiono de particula con pared
             if is_wall_collision(particle_pre, particle_post):
-                collision_velocities.append(get_collision_with_wall(particle_pre, particle_post))
+                wall_collision_times.append(time)
+                wall_collision_velocities.append(get_collision_with_wall(particle_pre, particle_post))
 
             # Caso: colisiono de particula con el obstaculo
             else:
-                collision_velocities.append(get_collision_with_obstacle(particle_pre))
+                obstacle_collision_times.append(time)
+                obstacle_collision_velocities.append(get_collision_with_obstacle(particle_pre))
 
         i = i + 1
 
-    return collision_times, collision_velocities
+    return wall_collision_times, wall_collision_velocities, obstacle_collision_times, obstacle_collision_velocities
 
 
 def is_wall_collision(particle_pre: [float], particle_post: [float]) -> bool:
