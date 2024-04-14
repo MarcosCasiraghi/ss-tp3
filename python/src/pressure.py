@@ -66,24 +66,16 @@ def get_collision_with_obstacle(particle_pre: [float]) -> float:
     return math.sqrt(particle_pre[VX] ** 2 + particle_pre[VY] ** 2)  # TODO: CHEEEECK!
 
 
-def calculate_pressure(delta_t, collision_times, collision_velocities, area):
-    num_samples = len(collision_times)
+def generate_pressure_bins(collision_times: [], collision_velocities: [], delta_t: float, particle_mass: float, area: float):
     pressures = []
-    current_pressure = 0
 
+    impulse_accumulator = 0
     delta_t_accumulated = delta_t
-
-    for i in range(num_samples):
-        # Se fija los valores dentro del rango delta t
-        if collision_times[i] <= delta_t_accumulated:
-            # Todo: revisar si es * 2 o no
-            current_pressure += collision_velocities[i]
-        else:
-            pressures.append(current_pressure / (delta_t * area))
-            current_pressure = collision_velocities[i]
+    for v, vt in zip(collision_velocities, collision_times):
+        impulse_accumulator += v
+        if vt > delta_t_accumulated:
+            pressures.append((impulse_accumulator * particle_mass) / (delta_t * area))       # TODO: check pq dice por unidad de area
+            impulse_accumulator = 0
             delta_t_accumulated += delta_t
-
-        if i == num_samples - 1:
-            pressures.append(current_pressure / (delta_t * area))
 
     return pressures
