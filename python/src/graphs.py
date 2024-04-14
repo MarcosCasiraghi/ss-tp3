@@ -10,3 +10,11 @@ def pressure_plot(pressures, delta_t):
     plt.ylabel('Presión')
     plt.grid(True)
     plt.show()
+
+
+def temperature_plot(temperature_times: [], temperature: []):
+    plt.scatter(temperature_times, temperature, marker='o', color='blue', s=5)
+    plt.xlabel('Tiempo')
+    plt.ylabel('Temperatura')
+    plt.grid(True)
+    plt.show()

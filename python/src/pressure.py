@@ -2,9 +2,7 @@ import math
 from util import *
 
 
-def get_collision_velocities(particle_filename: str):
-    particle_data = get_particle_data(particle_filename)
-
+def get_collision_velocities(particle_data: []):
     wall_collision_times = []
     wall_collision_velocities = []
 
@@ -65,10 +63,10 @@ def get_collision_with_wall(particle_pre: [float], particle_post: [float]) -> fl
 
 def get_collision_with_obstacle(particle_pre: [float]) -> float:
     # Calculamos la velocidad normal al choque
-    return math.sqrt(particle_pre[VX] ** 2 + particle_pre[VY] ** 2)     # TODO: CHEEEECK!
+    return math.sqrt(particle_pre[VX] ** 2 + particle_pre[VY] ** 2)  # TODO: CHEEEECK!
 
 
-def calculate_pressure(delta_t, collision_times, collision_velocities):
+def calculate_pressure(delta_t, collision_times, collision_velocities, area):
     num_samples = len(collision_times)
     pressures = []
     current_pressure = 0
@@ -79,13 +77,13 @@ def calculate_pressure(delta_t, collision_times, collision_velocities):
         # Se fija los valores dentro del rango delta t
         if collision_times[i] <= delta_t_accumulated:
             # Todo: revisar si es * 2 o no
-            current_pressure += collision_velocities[i] * 2
+            current_pressure += collision_velocities[i]
         else:
-            pressures.append(current_pressure / delta_t)
+            pressures.append(current_pressure / (delta_t * area))
             current_pressure = collision_velocities[i]
             delta_t_accumulated += delta_t
 
         if i == num_samples - 1:
-            pressures.append(current_pressure / delta_t)
+            pressures.append(current_pressure / (delta_t * area))
 
     return pressures
