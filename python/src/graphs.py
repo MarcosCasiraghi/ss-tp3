@@ -28,8 +28,8 @@ def dcm_plot(dcm_times: [], dcms: []):
     plt.show()
 
 
-def temp_pressure_plot(binned_temperature: [], binned_wall_pressure: []):
-    plt.scatter(binned_temperature, binned_wall_pressure, marker='o', color='blue')
+def temp_pressure_plot(temperature: [], wall_pressure: [], velocity_values: []):
+    plt.scatter(temperature, wall_pressure, marker='o', color='blue', label=velocity_values)
     plt.xlabel('Temperatura')
     plt.ylabel('Presión')
     plt.grid(True)

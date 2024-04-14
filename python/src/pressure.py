@@ -66,7 +66,7 @@ def get_collision_with_obstacle(particle_pre: [float]) -> float:
     return math.sqrt(particle_pre[VX] ** 2 + particle_pre[VY] ** 2)  # TODO: CHEEEECK!
 
 
-def generate_pressure_bins(collision_times: [], collision_velocities: [], delta_t: float, particle_mass: float, area: float):
+def generate_pressure_bins(collision_times: [], collision_velocities: [], delta_t: float, particle_mass: float, length: float):
     pressures = []
 
     impulse_accumulator = 0
@@ -74,8 +74,17 @@ def generate_pressure_bins(collision_times: [], collision_velocities: [], delta_
     for v, vt in zip(collision_velocities, collision_times):
         impulse_accumulator += v
         if vt > delta_t_accumulated:
-            pressures.append((impulse_accumulator * particle_mass) / (delta_t * area))       # TODO: check pq dice por unidad de area
+            pressures.append(
+                (impulse_accumulator * particle_mass) / (delta_t * length))  # TODO: check pq dice por unidad de area
             impulse_accumulator = 0
             delta_t_accumulated += delta_t
 
     return pressures
+
+
+def average_pressure(collision_times: [], collision_velocities: [], particle_mass: float, length: float) -> float:
+    impulse_accumulator = 0
+    for v in collision_velocities:
+        impulse_accumulator += v
+
+    return (impulse_accumulator * particle_mass) / (collision_times[-1] * length)
