@@ -1,7 +1,8 @@
 import math
 
+from src.collisions import count_collisions, COUNT_ONCE, COUNT_MANY
 from src.dcm import calculate_dcm
-from src.graphs import pressure_plot, temperature_plot, dcm_plot, temp_pressure_plot
+from src.graphs import pressure_plot, temperature_plot, dcm_plot, temp_pressure_plot, collisions_plot
 from src.temperature import  average_temperature
 from src.util import get_all_files, get_static_data, get_particle_data
 from src.pressure import get_collision_velocities, generate_pressure_bins, average_pressure
@@ -38,6 +39,16 @@ def ej_1_2():
     temp_pressure_plot(average_temperatures, average_pressures, starting_velocities)
 
 
+def ej_1_3():
+    particle_data = get_particle_data(get_all_files('../output-files/particle')[-1])
+
+    single_collisions = count_collisions(particle_data, COUNT_ONCE)
+    collisions_plot(single_collisions)
+
+    multi_collisions = count_collisions(particle_data, COUNT_MANY)
+    collisions_plot(multi_collisions)
+
+
 def ej_1_4():
     static_data = get_static_data(get_all_files('../output-files/static-data')[-1])
     particle_data = get_particle_data(get_all_files('../output-files/particle')[-1])
@@ -46,4 +57,5 @@ def ej_1_4():
 
 
 if __name__ == "__main__":
-    ej_1_2()
+    ej_1_3()
+

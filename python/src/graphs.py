@@ -35,3 +35,9 @@ def temp_pressure_plot(temperature: [], wall_pressure: [], velocity_values: []):
     plt.grid(True)
     plt.show()
 
+def collisions_plot(collision_times: []):
+    plt.scatter(collision_times, [i for i in range(len(collision_times))], marker='o', color='blue')
+    plt.xlabel('Tiempo')
+    plt.ylabel('Cantidad de choques')
+    plt.grid(True)
+    plt.show()
