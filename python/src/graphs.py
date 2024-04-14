@@ -12,9 +12,18 @@ def pressure_plot(pressures, delta_t):
     plt.show()
 
 
-def temperature_plot(temperature_times: [], temperature: []):
-    plt.scatter(temperature_times, temperature, marker='o', color='blue', s=5)
+def temperature_plot(temperature_times: [], temperatures: []):
+    plt.scatter(temperature_times, temperatures, marker='o', color='blue', s=5)
     plt.xlabel('Tiempo')
     plt.ylabel('Temperatura')
     plt.grid(True)
     plt.show()
+
+
+def dcm_plot(dcm_times: [], dcms: []):
+    plt.scatter(dcm_times, dcms, marker='o', color='blue', s=5)
+    plt.xlabel('Tiempo')
+    plt.ylabel('DCM')
+    plt.grid(True)
+    plt.show()
+

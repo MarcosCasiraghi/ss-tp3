@@ -1,6 +1,7 @@
 import math
 
-from src.graphs import pressure_plot, temperature_plot
+from src.dcm import calculate_dcm
+from src.graphs import pressure_plot, temperature_plot, dcm_plot
 from src.temperature import calculate_temperature
 from src.util import get_all_files, get_static_data, get_particle_data
 from src.pressure import get_collision_velocities, calculate_pressure
@@ -19,7 +20,7 @@ if __name__ == "__main__":
     pressure_plot(obstacle_pressure, delta_t)
 
     temperature_times, temperature = calculate_temperature(particle_data)
-
     temperature_plot(temperature_times, temperature)
 
-
+    dcm_times, dcms = calculate_dcm(particle_data, static_data['l'])
+    dcm_plot(dcm_times, dcms)
