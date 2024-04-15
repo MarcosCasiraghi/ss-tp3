@@ -18,7 +18,7 @@ def count_collisions(particle_data: [], collision_type: int) -> []:
 
         index = find_collision_with_wall_or_obstacle(prev, post)
 
-        if index and not is_wall_collision(prev[index], post[index]):
+        if index is not None and not is_wall_collision(prev[index], post[index]):
             if collision_type == COUNT_ONCE:
                 if index not in collision_ids:
                     collision_times.append(time)

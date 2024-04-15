@@ -58,7 +58,7 @@ def ej_1_4():
 
 
 if __name__ == "__main__":
-    ej_1_3()
+    # ej_1_3()
     # animate(get_all_files('../output-files/particle')[-1], get_all_files('../output-files/static-data')[-1], 10000)
-    animate_with_collisions(get_all_files('../output-files/particle')[-1], get_all_files('../output-files/static-data')[-1], 10000, COUNT_MANY)
+    animate_with_collisions(get_all_files('../output-files/particle')[-1], get_all_files('../output-files/static-data')[-1], 10000, COUNT_ONCE)
 
