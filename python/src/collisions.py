@@ -8,6 +8,7 @@ def count_collisions(particle_data: [], collision_type: int) -> []:
     collision_ids = set()
 
     collision_times = []    # cada vez que hay una colision, se registra el tiempo
+    ids = []
 
     i = 0
     while i + 1 < len(particle_data):
@@ -22,12 +23,14 @@ def count_collisions(particle_data: [], collision_type: int) -> []:
                 if index not in collision_ids:
                     collision_times.append(time)
                     collision_ids.add(index)
+                    ids.append(index)
             else:
                 collision_times.append(time)
+                ids.append(index)
 
         i = i + 1
 
-    return collision_times
+    return collision_times, ids
 
 
 def is_wall_collision(particle_pre: [float], particle_post: [float]) -> bool:

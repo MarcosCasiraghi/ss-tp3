@@ -6,6 +6,7 @@ from src.graphs import pressure_plot, temperature_plot, dcm_plot, temp_pressure_
 from src.temperature import  average_temperature
 from src.util import get_all_files, get_static_data, get_particle_data
 from src.pressure import get_collision_velocities, generate_pressure_bins, average_pressure
+from src.animation import animate, animate_with_collisions
 
 
 def ej_1_1():
@@ -57,5 +58,7 @@ def ej_1_4():
 
 
 if __name__ == "__main__":
-    ej_1_3()
+    # ej_1_3()
+    # animate(get_all_files('../output-files/particle')[-1], get_all_files('../output-files/static-data')[-1], 10000)
+    animate_with_collisions(get_all_files('../output-files/particle')[-1], get_all_files('../output-files/static-data')[-1], 10000, COUNT_MANY)
 
