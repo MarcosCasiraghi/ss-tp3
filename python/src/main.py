@@ -43,10 +43,10 @@ def ej_1_2():
 def ej_1_3():
     particle_data = get_particle_data(get_all_files('../output-files/particle')[-1])
 
-    single_collisions = count_collisions(particle_data, COUNT_ONCE)
+    single_collisions, ids = count_collisions(particle_data, COUNT_ONCE)
     collisions_plot(single_collisions)
 
-    multi_collisions = count_collisions(particle_data, COUNT_MANY)
+    multi_collisions, ids = count_collisions(particle_data, COUNT_MANY)
     collisions_plot(multi_collisions)
 
 
@@ -58,7 +58,7 @@ def ej_1_4():
 
 
 if __name__ == "__main__":
-    # ej_1_3()
+    ej_1_3()
     # animate(get_all_files('../output-files/particle')[-1], get_all_files('../output-files/static-data')[-1], 10000)
     animate_with_collisions(get_all_files('../output-files/particle')[-1], get_all_files('../output-files/static-data')[-1], 10000, COUNT_MANY)
 
