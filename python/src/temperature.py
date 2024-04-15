@@ -6,7 +6,7 @@ from src.util import *
 
 
 def temperature(particle: []):
-    return math.sqrt(particle[VX] ** 2 + particle[VY] ** 2)  # TODO: check calculo de temperatura
+    return particle[VX] ** 2 + particle[VY] ** 2
 
 
 def calculate_temperature(particle_data: []) -> ([], []):
