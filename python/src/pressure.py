@@ -19,7 +19,7 @@ def get_collision_velocities(particle_data: []):
 
         index = find_collision_with_wall_or_obstacle(prev, post)
 
-        if index:  # Es colision de pared o de obstaculo
+        if index is not None:  # Es colision de pared o de obstaculo
             particle_pre = prev[index]
             particle_post = post[index]
 

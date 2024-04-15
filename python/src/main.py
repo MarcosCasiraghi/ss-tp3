@@ -10,10 +10,10 @@ from src.animation import animate, animate_with_collisions
 
 
 def ej_1_1():
-    static_data = get_static_data(get_all_files('../output-files/static-data')[-1])
-    particle_data = get_particle_data(get_all_files('../output-files/particle')[-1])
+    static_data = get_static_data(get_all_files('../output-files/static-data')[0])
+    particle_data = get_particle_data(get_all_files('../output-files/particle')[0])
 
-    delta_t = 0.01
+    delta_t = 0.05
     wall_collision_times, wall_collision_velocities, obstacle_collision_times, obstacle_collision_velocities = get_collision_velocities(particle_data)
 
     binned_wall_pressure = generate_pressure_bins(wall_collision_times, wall_collision_velocities, delta_t, static_data['pm'], 4 * static_data['l'])
@@ -41,7 +41,7 @@ def ej_1_2():
 
 
 def ej_1_3():
-    particle_data = get_particle_data(get_all_files('../output-files/particle')[-1])
+    particle_data = get_particle_data(get_all_files('../output-files/particle')[0])
 
     single_collisions, ids = count_collisions(particle_data, COUNT_ONCE)
     collisions_plot(single_collisions)
@@ -58,7 +58,9 @@ def ej_1_4():
 
 
 if __name__ == "__main__":
-    # ej_1_3()
-    # animate(get_all_files('../output-files/particle')[-1], get_all_files('../output-files/static-data')[-1], 10000)
-    animate_with_collisions(get_all_files('../output-files/particle')[-1], get_all_files('../output-files/static-data')[-1], 10000, COUNT_ONCE)
+    ej_1_1()
+    ej_1_2()
+    ej_1_3()
+
+
 
