@@ -4,14 +4,17 @@ from src.util import *
 
 
 def dcm(obstacle: [], length: float):
-    return math.sqrt((obstacle[X] - length / 2) ** 2 + (obstacle[Y] - length / 2) ** 2)  # TODO: check calculo de dcm
+    return (obstacle[X] - length / 2) ** 2 + (obstacle[Y] - length / 2) ** 2
 
 
-def calculate_dcm(particle_data: [], length: float) -> ([], []):
+def calculate_dcm(particle_data: [], length: float, delta_t: float) -> []:
     dcms = []
-    dcm_times = []
-    for timeframe in particle_data:
-        dcm_times.append(timeframe[TIME])
-        dcms.append(dcm(timeframe[OBSTACLES][0], length))
+    total_delta_t = delta_t
+    for event in particle_data:
+        current_time = event[TIME]
 
-    return dcm_times, dcms
+        if current_time > total_delta_t:
+            dcms.append(dcm(event[OBSTACLES][0], length))
+            total_delta_t += delta_t
+
+    return dcms
