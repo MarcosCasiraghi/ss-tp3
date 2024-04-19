@@ -31,7 +31,7 @@ def get_collision_velocities(particle_data: []):
             # Caso: colisiono de particula con el obstaculo
             else:
                 obstacle_collision_times.append(time)
-                obstacle_collision_velocities.append(get_collision_speed_with_obstacle(particle_pre, particle_data[i][OBSTACLES][0]))
+                obstacle_collision_velocities.append(get_collision_speed_with_obstacle(particle_pre, particle_post, particle_data[i][OBSTACLES][0]))
 
         i = i + 1
 
@@ -40,21 +40,22 @@ def get_collision_velocities(particle_data: []):
 
 def get_collision_speed_with_wall(particle_pre: [float], particle_post: [float]) -> float:
     if particle_pre[VX] == - particle_post[VX]:
-        return abs(particle_pre[VX])
+        return 2 * abs(particle_pre[VX])
     else:
-        return abs(particle_pre[VY])
+        return 2 * abs(particle_pre[VY])
 
 
-def get_collision_speed_with_obstacle(particle: [float], obstacle: [float]) -> float:
-    dx = obstacle[X] - particle[X]
-    dy = obstacle[Y] - particle[Y]
+def get_collision_speed_with_obstacle(particle_pre: [float], particle_post: [float], obstacle: [float]) -> float:
+    dx = obstacle[X] - particle_pre[X]
+    dy = obstacle[Y] - particle_pre[Y]
 
     distance = math.sqrt(dx ** 2 + dy ** 2)
 
+    # Versor normal
     nx = dx / distance
     ny = dy / distance
 
-    return (particle[VX] * nx) + (particle[VY] * ny)
+    return abs((particle_post[VX] - particle_pre[VX]) * nx + (particle_post[VY] - particle_pre[VY]) * ny)
 
 
 def generate_pressure_bins(collision_times: [], collision_velocities: [], delta_t: float, particle_mass: float, length: float):
