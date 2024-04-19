@@ -43,6 +43,7 @@ def dcm_average_plot(dcm_times: [], dcms: []):
     plt.xlabel(f'Tiempo {TIME_UNIT}')
     plt.ylabel(f'DCM {DCM_UNITS}')
     plt.grid(True)
+    plt.ticklabel_format(axis='y', style='sci', scilimits=(0, 0), useMathText=True)
     plt.show()
 
 

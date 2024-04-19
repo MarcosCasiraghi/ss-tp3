@@ -18,6 +18,7 @@ def get_particle_data(filename):
 
     with open(filename, 'r') as file:
         reader = csv.reader(file)
+
         for row in reader:
             if row[0].startswith('t:'):
                 if current_time:

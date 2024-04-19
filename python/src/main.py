@@ -1,15 +1,10 @@
 import math
-import concurrent.futures
-
-import numpy as np
-
 from src.collisions import count_collisions, COUNT_ONCE, COUNT_MANY
-from src.dcm import calculate_dcm
+from src.dcm import *
 from src.graphs import *
 from src.temperature import average_temperature, calculate_temperature
 from src.util import get_all_files, get_static_data, get_particle_data
 from src.pressure import get_collision_velocities, generate_pressure_bins, average_pressure
-
 
 
 def ej_1_1():
@@ -54,33 +49,16 @@ def ej_1_3():
 
 def ej_1_4():
     delta_t = 0.01
-    all_dmcs = []
 
-    def process_files(file_pair):
-        d_filename, s_filename = file_pair
-        static_data = get_static_data(s_filename)
-        particle_data = get_particle_data(d_filename)
-        dcms = calculate_dcm(particle_data, static_data['l'], delta_t)
-        return dcms
+    dcms_times, avg_dcms = calculate_dcm(
+        get_all_files('../output-files/particle'),
+        get_all_files('../output-files/static-data'),
+        delta_t
+    )
 
-    file_pairs = list(zip(get_all_files('../output-files/particle'), get_all_files('../output-files/static-data')))
+    dcm_average_plot(dcms_times, avg_dcms)
 
-    with concurrent.futures.ThreadPoolExecutor() as executor:
-        results = list(executor.map(process_files, file_pairs))
-
-    min_length = min(len(dcms) for dcms in results)
-    for dcms in results:
-        for _ in range(len(dcms) - min_length):
-            dcms.pop()
-        all_dmcs.append(np.array(dcms))
-
-    dmcs_times = [delta_t * i for i in range(0, min_length)]
-
-    all_dcm_plot(dmcs_times, all_dmcs)
-
-    avg_dcms = np.mean(np.array(all_dmcs), axis=0)
-
-    dcm_average_plot(dmcs_times, avg_dcms)
+    print(f'Slope incline: {calculate_incline(avg_dcms, dcms_times, 0.5)}')
 
 
 if __name__ == "__main__":
