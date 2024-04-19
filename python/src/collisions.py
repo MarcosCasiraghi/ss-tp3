@@ -1,4 +1,7 @@
 from src.util import *
+from temperature import calculate_temperature, average_temperature
+from matplotlib import pyplot as plt
+from graphs import TEMP_UNITS
 
 COUNT_ONCE = 0
 COUNT_MANY = 1
@@ -49,4 +52,86 @@ def find_collision_with_wall_or_obstacle(prev_array: [float], post_array: [float
             count += 1
 
     return idx if count == 1 else None
+
+
+def time_to_collisions_multiple_velocities(particle_files, static_files, percentage_to_reach):
+    time_taken_array = []
+    temperatures_array = []
+    for particle_file, static_file in zip(particle_files, static_files):
+        particle_data = get_particle_data(particle_file)
+        static_file = get_static_data(static_file)
+
+        temperature_times, temperatures = calculate_temperature(particle_data)
+
+        single_collisions, idx = count_collisions(particle_data, COUNT_ONCE)
+        collisions = 0
+
+        time_taken = 0
+        for collision_time in single_collisions:
+            collisions += 1
+            if collisions > static_file['n'] * percentage_to_reach:
+                time_taken = collision_time
+                break
+
+        index = 0
+        for idx, temperature_time in enumerate(temperature_times):
+            if temperature_time == time_taken:
+                index = idx
+                break
+
+        temperature_at_time = temperatures[index]
+
+        time_taken_array.append(time_taken)
+        temperatures_array.append(temperature_at_time)
+
+    plt.scatter(time_taken_array, temperatures_array, marker='o', color='blue')
+    plt.xlabel(f'Temperatura {TEMP_UNITS}')
+    plt.ylabel('Tiempo en alcanzar ' + str(int(percentage_to_reach * 100)) + '% de colisiones unicas (s)')
+    plt.grid(True)
+
+    plt.ticklabel_format(axis='y', style='sci', scilimits=(0, 0), useMathText=True)
+    plt.ticklabel_format(axis='x', style='sci', scilimits=(0, 0), useMathText=True)
+
+    plt.show()
+
+
+def gradient_against_temperature(particle_files, static_files):
+    gradients = []
+    temperatures = []
+    for particle_file, static_file in zip(particle_files, static_files):
+        particle_data = get_particle_data(particle_file)
+        static_file = get_static_data(static_file)
+
+        average_temperature_value = average_temperature(particle_data)
+
+        collision_times, ids = count_collisions(particle_data, COUNT_MANY)
+        collision_amount = [i for i in range(len(collision_times))]
+
+        xysum = 0
+        xsum = 0
+        ysum = 0
+        xsquaredsum = 0
+
+        for x, y in zip(collision_times, collision_amount):
+            xysum += x * y
+            xsum += x
+            ysum += y
+            xsquaredsum += x * x
+
+        n = static_file['n']
+        gradient = (n * xysum - xsum * ysum) / (n * xsquaredsum - xsum * xsum)
+
+        gradients.append(gradient)
+        temperatures.append(average_temperature_value)
+
+    plt.scatter(temperatures, gradients, marker='o', color='blue')
+    plt.xlabel(f'Temperatura {TEMP_UNITS}')
+    plt.ylabel('Colisión con obstáculo por unidad de tiempo')
+    plt.grid(True)
+
+    plt.ticklabel_format(axis='y', style='sci', scilimits=(0, 0), useMathText=True)
+    plt.ticklabel_format(axis='x', style='sci', scilimits=(0, 0), useMathText=True)
+
+    plt.show()
+
 

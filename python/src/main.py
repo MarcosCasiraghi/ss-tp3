@@ -1,17 +1,18 @@
 import math
-from src.collisions import count_collisions, COUNT_ONCE, COUNT_MANY
 from src.dcm import *
+from src.collisions import count_collisions, COUNT_ONCE, COUNT_MANY, time_to_collisions_multiple_velocities, gradient_against_temperature
 from src.graphs import *
 from src.temperature import average_temperature, calculate_temperature
 from src.util import get_all_files, get_static_data, get_particle_data
 from src.pressure import get_collision_velocities, generate_pressure_bins, average_pressure
+from animation import animate, animate_with_collisions
 
 
 def ej_1_1():
     static_data = get_static_data(get_all_files('../output-files/static-data')[0])
     particle_data = get_particle_data(get_all_files('../output-files/particle')[0])
 
-    delta_t = 0.05
+    delta_t = 0.03
     wall_collision_times, wall_collision_velocities, obstacle_collision_times, obstacle_collision_velocities = get_collision_velocities(particle_data)
 
     binned_wall_pressure = generate_pressure_bins(wall_collision_times, wall_collision_velocities, delta_t, static_data['pm'], 4 * static_data['l'])
@@ -43,8 +44,12 @@ def ej_1_3():
     single_collisions, ids = count_collisions(particle_data, COUNT_ONCE)
     collisions_plot(single_collisions)
 
+    time_to_collisions_multiple_velocities(get_all_files('../output-files/particle'), get_all_files('../output-files/static-data'), 0.5)
+
     multi_collisions, ids = count_collisions(particle_data, COUNT_MANY)
     collisions_plot(multi_collisions)
+
+    gradient_against_temperature(get_all_files('../output-files/particle'), get_all_files('../output-files/static-data'))
 
 
 def ej_1_4():
@@ -62,7 +67,10 @@ def ej_1_4():
 
 
 if __name__ == "__main__":
-    ej_1_4()
+    # ej_1_4()
+    # ej_1_2()
+    # ej_1_3()
+    animate(get_all_files('../output-files/particle')[-1], get_all_files('../output-files/static-data')[-1], 10000)
 
 
 

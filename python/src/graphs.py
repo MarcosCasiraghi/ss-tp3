@@ -2,7 +2,7 @@ from matplotlib import pyplot as plt
 
 PRESSURE_UNIT = '$(Pa \\cdot m)$'
 TIME_UNIT = '$(s)$'
-TEMP_UNITS = '$(Ua)$'
+TEMP_UNITS = '$(U.A.)$'
 DCM_UNITS = '$(m^2)$'
 
 def pressure_plot(wall_pressure, obstacle_pressure, delta_t):
@@ -18,6 +18,9 @@ def pressure_plot(wall_pressure, obstacle_pressure, delta_t):
     plt.xlabel(f'Tiempo {TIME_UNIT}')
     plt.ylabel(f'Presión {PRESSURE_UNIT}')
     plt.grid(True)
+
+    plt.ticklabel_format(axis='y', style='sci', scilimits=(0, 0), useMathText=True)
+
     plt.show()
 
 
@@ -52,6 +55,10 @@ def temp_pressure_plot(temperature: [], wall_pressure: [], velocity_values: []):
     plt.xlabel(f'Temperatura {TEMP_UNITS}')
     plt.ylabel(f'Presión {PRESSURE_UNIT}')
     plt.grid(True)
+
+    plt.ticklabel_format(axis='y', style='sci', scilimits=(0, 0), useMathText=True)
+    plt.ticklabel_format(axis='x', style='sci', scilimits=(0, 0), useMathText=True)
+
     plt.show()
 
 
