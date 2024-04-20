@@ -1,4 +1,7 @@
+import numpy as np
 from matplotlib import pyplot as plt
+
+from src.dcm import up_to_idx
 
 PRESSURE_UNIT = '$(Pa \\cdot m)$'
 TIME_UNIT = '$(s)$'
@@ -41,12 +44,28 @@ def all_dcm_plot(dcm_times: [], dcms: [[]]):
     plt.show()
 
 
-def dcm_average_plot(dcm_times: [], dcms: []):
-    plt.plot(dcm_times, dcms, color='blue')
+def dcm_average_plot(dcm_times: [], dcms: [], std_dcms: [], up_to: int, poly1d_fn):
+    plt.errorbar(dcm_times, dcms, std_dcms, linestyle='None', marker='o', color='blue', label='DCM')
+
+    plt.plot(dcm_times[:up_to], poly1d_fn(dcm_times[:up_to]), label='Ajuste lineal', color='red')
+
     plt.xlabel(f'Tiempo {TIME_UNIT}')
     plt.ylabel(f'DCM {DCM_UNITS}')
     plt.grid(True)
     plt.ticklabel_format(axis='y', style='sci', scilimits=(0, 0), useMathText=True)
+    plt.legend()
+    plt.show()
+
+
+def graph_linear_regression_error(a: [], ecm: []):
+    plt.plot(a, ecm, label='Error Cuadratico Medio')
+
+    plt.xlabel(f'a')
+    plt.ylabel(f'ECM')
+    plt.grid(True)
+    plt.ticklabel_format(axis='x', style='sci', scilimits=(0, 0), useMathText=True)
+    plt.ticklabel_format(axis='y', style='sci', scilimits=(0, 0), useMathText=True)
+    plt.legend()
     plt.show()
 
 

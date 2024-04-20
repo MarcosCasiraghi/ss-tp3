@@ -1,5 +1,4 @@
-import concurrent
-from multiprocessing.pool import ThreadPool, Pool
+from multiprocessing.pool import Pool
 
 import numpy as np
 
@@ -55,20 +54,52 @@ def calculate_dcm(particle_filename: [], static_filename: [], delta_t: float):
 
     dcms_times = [delta_t * i for i in range(0, min_length)]
     avg_dcms = np.mean(np.array(all_dmcs), axis=0)
+    std_dcms = np.std(np.array(all_dmcs), axis=0)
 
-    return dcms_times, avg_dcms
+    return dcms_times, avg_dcms, std_dcms
 
 
-def calculate_incline(dcms: np.array, dcms_times: np.array, up_to: float) -> float:
-    max_index = 0
+def up_to_idx(dcms_times: np.array, up_to: float):
     for i, val in enumerate(dcms_times):
         if val > up_to:
-            max_index = i
-            break
+            return i
 
+
+def calculate_regression(dcms_times: np.array, dcms:np.array, up_to: int):
+    return np.polyfit(dcms_times[:up_to], dcms[:up_to], 1)
+
+
+def ecm(dcms_times, dcms, a, b):
+
+    error = 0
+    for dt, d in zip(dcms_times, dcms):
+        error += (d - (a * dt)) ** 2
+
+    return error
+
+
+def calculate_regression_error(dcms_times, dcms, coef, offset: float, step: float):
+    a = coef[0]
+    b = coef[1]
+
+    print(coef)
+
+    a_prime = a - offset
+    errors = []
+    a_values = []
+    while a_prime < a + offset:
+        a_values.append(a_prime)
+        errors.append(ecm(dcms_times, dcms, a_prime, b))
+        a_prime += step
+
+    return a_values, errors
+
+
+def calculate_incline(dcms: np.array, dcms_times: np.array, up_to: int) -> float:
     model = LinearRegression()
-    model.fit(dcms[:max_index].reshape(-1, 1), dcms_times[:max_index])
+    model.fit(np.array(dcms_times[:up_to]).reshape(-1,1), dcms[:up_to])
 
+    print(model.coef_)
     slope = model.coef_[0]
 
     return slope

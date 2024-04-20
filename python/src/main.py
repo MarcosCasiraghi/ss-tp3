@@ -68,22 +68,27 @@ def ej_1_3():
 def ej_1_4():
     delta_t = 0.01
 
-    dcms_times, avg_dcms = calculate_dcm(
+    dcms_times, avg_dcms, std_dcms = calculate_dcm(
         get_all_files('../output-files/particle'),
         get_all_files('../output-files/static-data'),
         delta_t
     )
 
-    dcm_average_plot(dcms_times, avg_dcms)
+    up_to = up_to_idx(dcms_times, 0.5)
+    coef = calculate_regression(dcms_times, avg_dcms, up_to)
 
-    print(f'Slope incline: {calculate_incline(avg_dcms, dcms_times, 0.5)}')
+    dcm_average_plot(dcms_times, avg_dcms, std_dcms, up_to, np.poly1d(coef))
+
+    calculate_incline(avg_dcms, dcms_times, up_to)
+    a_values, errors = calculate_regression_error(dcms_times, avg_dcms, coef, 0.001, 0.00015)
+
+    graph_linear_regression_error(a_values, errors)
+
 
 
 if __name__ == "__main__":
-    # ej_1_4()
-    ej_1_2()
-    # ej_1_3()
-    # animate(get_all_files('../output-files/particle')[-1], get_all_files('../output-files/static-data')[-1], 10000)
+    ej_1_4()
+
 
 
 
