@@ -84,7 +84,7 @@ def time_to_collisions_multiple_velocities(particle_files, static_files, percent
         time_taken_array.append(time_taken)
         temperatures_array.append(temperature_at_time)
 
-    plt.scatter(time_taken_array, temperatures_array, marker='o', color='blue')
+    plt.scatter(temperatures_array, time_taken_array, marker='o', color='blue')
     plt.xlabel(f'Temperatura {TEMP_UNITS}')
     plt.ylabel('Tiempo en alcanzar ' + str(int(percentage_to_reach * 100)) + '% de colisiones unicas (s)')
     plt.grid(True)

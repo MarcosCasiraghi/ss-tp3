@@ -50,11 +50,20 @@ def dcm_average_plot(dcm_times: [], dcms: []):
     plt.show()
 
 
-def temp_pressure_plot(temperature: [], wall_pressure: [], velocity_values: []):
-    plt.scatter(temperature, wall_pressure, marker='o', color='blue', label=velocity_values)
+def temp_pressure_plot(temperature: [], pressure: [], stds: []):
+    wall_pressure = [p[0] for p in pressure]
+    obstacle_pressure = [p[1] for p in pressure]
+
+    wall_std = [p[0] for p in stds]
+    obstacle_std = [p[1] for p in stds]
+
+    plt.errorbar(temperature, wall_pressure, yerr=wall_std, fmt='o', color='blue', label='Presión promedio de las paredes')
+    plt.errorbar(temperature, obstacle_pressure, yerr=obstacle_std, fmt='x', color='red', label='Presión promedio del obstáculo')
+
     plt.xlabel(f'Temperatura {TEMP_UNITS}')
     plt.ylabel(f'Presión {PRESSURE_UNIT}')
     plt.grid(True)
+    plt.legend()
 
     plt.ticklabel_format(axis='y', style='sci', scilimits=(0, 0), useMathText=True)
     plt.ticklabel_format(axis='x', style='sci', scilimits=(0, 0), useMathText=True)

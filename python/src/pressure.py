@@ -2,6 +2,7 @@ import math
 
 from src.collisions import find_collision_with_wall_or_obstacle, is_wall_collision
 from util import *
+import numpy as np
 
 
 def get_collision_velocities(particle_data: []):
@@ -74,9 +75,14 @@ def generate_pressure_bins(collision_times: [], collision_velocities: [], delta_
     return pressures
 
 
-def average_pressure(collision_times: [], collision_velocities: [], particle_mass: float, length: float) -> float:
+def average_pressure(collision_times: [], collision_velocities: [], particle_mass: float, length: float):
     impulse_accumulator = 0
     for v in collision_velocities:
         impulse_accumulator += v
 
-    return (impulse_accumulator * particle_mass) / (collision_times[-1] * length)
+    mean_pressure = (impulse_accumulator * particle_mass) / (collision_times[-1] * length)
+
+    pressures = np.array([(v * particle_mass) / (collision_times[-1] * length) for v in collision_velocities])
+    std_pressure = np.std(pressures)
+
+    return mean_pressure, std_pressure
