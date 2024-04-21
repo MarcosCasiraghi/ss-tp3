@@ -1,5 +1,5 @@
 import math
-from src.dcm import calculate_dcm, calculate_incline
+from src.dcm import calculate_dcm, calculate_incline, calculate_regression, calculate_regression_error
 from src.collisions import count_collisions, COUNT_ONCE, COUNT_MANY, time_to_collisions_multiple_velocities, gradient_against_temperature
 from src.graphs import *
 from src.temperature import average_temperature, calculate_temperature
@@ -52,17 +52,17 @@ def ej_1_2():
 
 
 def ej_1_3():
-    # particle_data = get_particle_data(get_all_files('../output-files/particle')[0])
-    #
-    # single_collisions, ids = count_collisions(particle_data, COUNT_ONCE)
-    # collisions_plot(single_collisions)
+    particle_data = get_particle_data(get_all_files('../output-files/particle')[0])
+
+    single_collisions, ids = count_collisions(particle_data, COUNT_ONCE)
+    collisions_plot(single_collisions)
 
     time_to_collisions_multiple_velocities(get_all_files('../output-files/particle'), get_all_files('../output-files/static-data'), 0.5)
 
-    # multi_collisions, ids = count_collisions(particle_data, COUNT_MANY)
-    # collisions_plot(multi_collisions)
-    #
-    # gradient_against_temperature(get_all_files('../output-files/particle'), get_all_files('../output-files/static-data'))
+    multi_collisions, ids = count_collisions(particle_data, COUNT_MANY)
+    collisions_plot(multi_collisions)
+
+    gradient_against_temperature(get_all_files('../output-files/particle'), get_all_files('../output-files/static-data'))
 
 
 def ej_1_4():
@@ -85,8 +85,10 @@ def ej_1_4():
     graph_linear_regression_error(a_values, errors)
 
 
-
 if __name__ == "__main__":
+    ej_1_1()
+    ej_1_2()
+    ej_1_3()
     ej_1_4()
 
 
