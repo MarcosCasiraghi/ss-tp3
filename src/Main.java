@@ -6,7 +6,7 @@ import java.util.List;
 
 public class Main {
     public static void main(String[] args) {
-        int n = 200;
+        int n = 250;
         double l = 0.1;
         double particleR = 0.001;
         double particleMass = 1;
