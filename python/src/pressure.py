@@ -76,13 +76,15 @@ def generate_pressure_bins(collision_times: [], collision_velocities: [], delta_
 
 
 def average_pressure(collision_times: [], collision_velocities: [], particle_mass: float, length: float):
-    impulse_accumulator = 0
-    for v in collision_velocities:
-        impulse_accumulator += v
+    # impulse_accumulator = 0
+    # for v in collision_velocities:
+    #     impulse_accumulator += v
+    #
+    # mean_pressure = (impulse_accumulator * particle_mass) / (collision_times[-1] * length)
 
-    mean_pressure = (impulse_accumulator * particle_mass) / (collision_times[-1] * length)
+    pressures = generate_pressure_bins(collision_times, collision_velocities, 0.0065, particle_mass, length)
 
-    pressures = np.array([(v * particle_mass) / (collision_times[-1] * length) for v in collision_velocities])
+    mean_pressure = np.mean(pressures)
     std_pressure = np.std(pressures)
 
     return mean_pressure, std_pressure
